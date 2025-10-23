@@ -1,4 +1,4 @@
-# WDD 231 personal project
+# WDD 231 Team Project
 
 ## Description
 
