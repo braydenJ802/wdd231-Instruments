@@ -3,8 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Music Project</title>
+    <title>ChordCloud</title>
     <style>
+        /* Skip link usability */
+        .skip-link {
+        position: absolute; left: -9999px; top: auto;
+        }
+        .skip-link:focus {
+        left: 1rem; top: 1rem; background: #fff; padding: .5rem .75rem; border: 2px solid #000;
+        }
+        
         body {
             font-family: Arial, sans-serif;
             margin: 0;
@@ -38,16 +46,93 @@
     </style>
 </head>
 <body>
-    <header>
-        <h1>Music Project</h1>
-        <p>Your creative space for all things music!</p>
+    <!-- Skip link helps keyboard users jump past repeated nav -->
+    <a class="skip-link" href="#instruments">Skip to instruments</a>
+
+    <header class="site-header">
+        <nav aria-label="Primary">
+            <ul class="nav-list">
+                <li><a href="#/index.html" aria-label="ChordCloud home">ChordCloud</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </nav>
     </header>
-    <main>
-        <h2>Welcome</h2>
-        <p>This is your starter page. You can add playlists, audio players, or any other content here later.</p>
+    
+    <main id="main">
+
+        <!-- Instruments grid -->
+        <section id="instruments" class="instruments" aria-labelledby="instruments-heading">
+            <h1 id="instruments-heading">Instruments</h1>
+        
+            <ul class="instruments-grid">
+                <!-- The instruments (and their corresponding data) will be dynamically loaded in later on with Java Script-->
+                
+                <li class="instrument-item">
+                    <article class="instrument-card">
+                        <figure>
+                            <img src="#" alt="A slender double-reed woodwind" />
+                            <figcaption class="instrument-name">Oboe</figcaption>
+                        </figure>
+                  
+                        <p class="instrument-description">A double-reeded woodwind instrument.</p>
+
+                        <!-- Button for modal (progressive enhancement) -->
+                        <button class="open-modal" data-id="oboe" aria-haspopup="dialog">Quick view & listen</button>
+                    </article>
+                </li>
+
+                <li class="instrument-item">
+                    <article class="instrument-card">
+                        <figure>
+                            <img src="#" alt="Silver concert flute" />
+                            <figcaption class="instrument-name">Flute</figcaption>
+                        </figure>
+              
+                        <p class="instrument-description">A bright, agile woodwind voice.</p>
+
+                        <!-- Button for modal (progressive enhancement) -->
+                        <button class="open-modal" data-id="flute" aria-haspopup="dialog">Quick view & listen</button>
+                    </article>
+                </li>
+
+                <!-- Repeat <li>…</li> for more instruments -->
+            </ul>
+        </section>
+        
+        <!-- Pop-up modal with more details! This will be populated via JavaScript using the data-id -->
+        <dialog id="instrument-dialog" aria-labelledby="dialog-title" aria-describedby="dialog-desc">
+            <form method="dialog">
+                <button class="dialog-close" aria-label="Close">✕</button>
+            </form>
+
+            <article class="dialog-content">
+                <header>
+                    <h2 id="dialog-title">Instrument name</h2>
+                </header>
+                <figure>
+                    <img id="dialog-image" src="#" alt="" />
+                    <figcaption id="dialog-caption"></figcaption>
+                </figure>
+                <p id="dialog-desc">Longer description goes here.</p>
+                <audio id="dialog-audio" controls preload="none">
+                    <source src="#" type="audio/mpeg" />
+                </audio>
+            </article>
+        </dialog>
+
+        <section id="contact" aria-labelledby="contact-heading">
+            <h2 id="contact-heading">Contact</h2>
+            <p>Email us at <a href="mailto:team@chordcloud.example">team@chordcloud.example</a></p>
+        </section>
+
+        <section id="about" aria-labelledby="about-heading">
+            <h2 id="about-heading">About</h2>
+            <p>ChordCloud is a student project showcasing orchestral and band instruments.</p>
+        </section>
     </main>
+
     <footer>
-        &copy; 2025 Music Project
+        <small>&copy; 2025 ChordCloud</small>
     </footer>
 </body>
 </html>
