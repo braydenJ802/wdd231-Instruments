@@ -1,8 +1,6 @@
 import { fetchInstruments } from './api.js'
 import { renderInstruments } from './ui.js'
 import { getUser, saveUser } from './storage.js'
-import { fetchInstruments } from './api.js';
-import { renderInstruments } from './ui.js';
 import { initializeModal } from './modal.js';
 
 const signupBtn = document.getElementById('signup-btn')
