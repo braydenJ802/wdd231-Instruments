@@ -7,7 +7,9 @@ export async function renderInstruments(instruments) {
         return;
     }
 
-    const filteredInstruments = instruments.filter(inst => inst.ns === 0);
+    const filteredInstruments = instruments.filter(inst => {
+        return inst.ns === 0 && inst.title !== 'Treatise on Instrumentation';
+    });
     instrumentsData = []; // Reset data array
 
     const instrumentPromises = filteredInstruments.map(async (instrument) => {
