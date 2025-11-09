@@ -1,58 +1,60 @@
-export async function renderInstruments(instruments) {
+let instrumentsData = []; // Module-level variable to store data
 
-    for (const instrument of instruments) {
+export async function renderInstruments(instruments) {
+    const instrumentsList = document.getElementById("instruments-list");
+    if (!instrumentsList) {
+        console.error("Could not find instruments-list element");
+        return;
+    }
+
+    const filteredInstruments = instruments.filter(inst => inst.ns === 0);
+    instrumentsData = []; // Reset data array
+
+    const instrumentPromises = filteredInstruments.map(async (instrument) => {
+        try {
             const title = instrument.title;
             
-            // Use REST API for summary and image
             const summaryUrl = `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(title)}`;
             const summaryResponse = await fetch(summaryUrl);
-            console.log(summaryResponse);
+            if (!summaryResponse.ok) {
+                throw new Error(`Failed to fetch summary for ${title}`);
+            }
             const summaryData = await summaryResponse.json();
-            console.log(summaryData);
             
-            // Use REST API for media links
-            const mediaUrl = `https://en.wikipedia.org/api/rest_v1/page/${encodeURIComponent(title)}/links/media`;
-            const mediaResponse = await fetch(mediaUrl);
+            const imageUrl = summaryData.thumbnail ? summaryData.thumbnail.source : null;
 
-            // Check if mediaResponse is ok before parsing JSON
-            let mediaData = null;
-            if (mediaResponse.ok) {
-                mediaData = await mediaResponse.json();
-            } else {
-                console.log(`No media found for ${title}. Status: ${mediaResponse.status}`);
+            // Only display the instrument if an image is available.
+            if (!imageUrl) {
+                return '';
             }
-            
-            // 
-            let imageUrl = summaryData.thumbnail ? summaryData.thumbnail.source : null;
-            let audioUrl = null;
-            
-            // Find an audio file only if mediaData is not null
-            if (mediaData && mediaData.files) {
-                for (const item of mediaData.files) {
-                    if (item.type === 'audio') {
-                        const fileTitle = item.title;
-                        const fileUrl = `https://api.wikimedia.org/core/v1/commons/file/${encodeURIComponent(fileTitle)}`;
-                        const fileResponse = await fetch(fileUrl);
-                        const fileData = await fileResponse.json();
-                        audioUrl = fileData.preferred.url;
-                        break;
-                    }
-                }
-            }
-            
-            // Display the results
-            const li = document.createElement('li');
-            let html = `<h3>${title}</h3>`;
-            if (imageUrl) {
-                html += `<img src="${imageUrl}" alt="${title}">`;
-            }
-            if (summaryData.extract) {
-                html += `<p>${summaryData.extract}</p>`;
-            }
-            if (audioUrl) {
-                html += `<audio controls><source src="${audioUrl}" type="audio/ogg"></audio>`;
-            }
-            li.innerHTML = html;
-            instrumentsList.appendChild(li);
+
+            // Store all relevant data for the modal
+            const instrumentDetails = {
+                title: title,
+                imageUrl: imageUrl,
+                extract: summaryData.extract,
+            };
+            const index = instrumentsData.push(instrumentDetails) - 1;
+
+            // Generate HTML for the grid (image and name only)
+            let html = `<li class="instrument-card" data-instrument-index="${index}" role="button" tabindex="0">
+                            <figure>
+                                <img src="${imageUrl}" alt="${title}">
+                                <figcaption>${title}</figcaption>
+                            </figure>
+                        </li>`;
+            return html;
+        } catch (error) {
+            console.error(`Failed to process instrument ${instrument.title}:`, error);
+            return ''; // Return an empty string for this instrument to not break the page
         }
-};
+    });
+
+    const instrumentHtmls = await Promise.all(instrumentPromises);
+    instrumentsList.innerHTML = instrumentHtmls.join('');
+}
+
+// Helps to get data for the modal
+export function getInstrumentData(index) {
+    return instrumentsData[index];
+}

@@ -105,6 +105,31 @@ body {
   flex-direction: column;
 }
 
+.skip-link {
+    position: absolute;
+    top: -40px;
+    left: 0;
+    background: #38bdf8;
+    color: #0f172a;
+    padding: 8px;
+    z-index: 100;
+    transition: top 0.3s;
+}
+
+.skip-link:focus {
+    top: 10px;
+}
+
+a {
+    color: #f8fafc;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+a:hover {
+    color: #38bdf8;
+}
+
 header {
   background: linear-gradient(90deg, #1e293b, #0f172a);
   padding: 1.5rem 2rem;
@@ -123,7 +148,7 @@ nav {
 }
 
 nav a {
-  color: #94a3b8;
+  color: #f8fafc;
   text-decoration: none;
   margin: 0 1rem;
   font-weight: 500;
@@ -132,6 +157,14 @@ nav a {
 
 nav a:hover {
   color: #38bdf8;
+}
+
+.nav-list {
+  list-style-type: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0;
 }
 
 main {
@@ -149,12 +182,53 @@ section {
   border-radius: 12px;
   padding: 2rem;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-section:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+
+
+/* Instrument Grid Styles */
+#instruments-list {
+    list-style-type: none;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+}
+
+.instrument-card {
+    background: #334155;
+    border-radius: 8px;
+    overflow: hidden; /* Ensures the image corners are rounded */
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.instrument-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+}
+
+.instrument-card figure {
+    margin: 0;
+    padding: 0;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.instrument-card img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+
+.instrument-card figcaption {
+    padding: 1rem;
+    font-weight: 500;
+    text-align: center;
+    background-color: #1e293b;
 }
 
 h2 {
@@ -210,17 +284,58 @@ footer {
   box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.3);
 }
 
-@media (min-width: 768px) {
-  main {
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-  section {
-    flex: 1 1 45%;
-    margin: 1rem;
-  }
+/* Dialog Styles */
+dialog {
+    border: none;
+    border-radius: 12px;
+    padding: 2rem;
+    background: #1e293b; /* Same as section background */
+    color: #f8fafc;
+    width: 90%;
+    max-width: 600px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
+
+dialog::backdrop {
+    background-color: rgba(15, 23, 42, 0.8); /* Dark gray transparent */
+    backdrop-filter: blur(4px);
+}
+
+.dialog-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: transparent;
+    border: none;
+    color: #94a3b8;
+    font-size: 1.5rem;
+    line-height: 1;
+    cursor: pointer;
+    padding: 0.5rem;
+    transition: color 0.3s ease, transform 0.2s ease;
+}
+
+.dialog-close:hover {
+    color: #38bdf8;
+    transform: scale(1.1);
+}
+
+/* Styles for the content inside the dialog */
+.dialog-content #dialog-image {
+    width: auto; /* Adjust width to maintain aspect ratio */
+    max-width: 100%; /* Ensure it doesn't overflow the container */
+    height: auto;
+    max-height: 350px; /* Set a max height */
+    border-radius: 8px;
+    margin: 0 auto 1rem auto; /* Center the image horizontally */
+    display: block; /* Needed for margin auto to work */
+}
+
+
 
 @media (max-width: 480px) {
   header h1 {
