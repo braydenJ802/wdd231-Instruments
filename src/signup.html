@@ -20,6 +20,17 @@
       </label>
       <button type="submit">Sign Up</button>
     </form>
+
+<a href="index.html" id="reset-link">Reset</a>
+
+<script>
+const resetLink = document.getElementById('reset-link')
+
+resetLink.addEventListener('click', (e) => {
+  localStorage.clear() // clears all stored data
+})
+</script>
+
   </main>
 
   <script type="module" src="js/signup.js"></script>
