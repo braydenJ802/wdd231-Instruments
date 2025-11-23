@@ -6,31 +6,20 @@
     <title>ChordCloud</title>
     <link rel="stylesheet" type="text/css" href="css/style.css">
     <script type="module" src="js/main.js" defer></script>
-
 </head>
 <body>
-    <!-- Skip link helps keyboard users jump past repeated nav -->
     <a class="skip-link" href="#instruments">Skip to instruments</a>
 
-<header class="site-header">
-  <nav aria-label="Primary">
-    <div class="nav-left">
-      <a href="#/index.html" aria-label="ChordCloud home">ChordCloud</a>
-      <a href="#contact">Contact Us</a>
-    </div>
+    <header class="site-header">
+        <nav aria-label="Primary" class="nav-grid">
+            <a href="#/index.html" aria-label="ChordCloud home">ChordCloud</a>
+            <a href="#contact">Contact</a>
+            <img src="images/cclogo.png" alt="ChordCloud logo" class="logo">
+            <a href="#about">About</a>
+            <a id="signup-btn" class="button" href="signup.html">Sign up for our emails!</a>
+        </nav>
+    </header>
 
-    <div class="nav-logo">
-      <img src="images/cclogo.png" alt="ChordCloud logo" class="logo">
-    </div>
-
-    <div class="nav-right">
-      <a href="#about">About</a>
-      <a id="signup-btn" class="button" href="signup.html">Sign up for our emails!</a>
-    </div>
-  </nav>
-</header>
-
-    
     <main id="main">
         
         <!-- Search and Filters -->
@@ -64,8 +53,8 @@
                 <!-- The instruments (and their corresponding data) will be dynamically loaded in later on with Java Script-->
             </ul>
         </section>
-        
-        <!-- Pop-up modal with more details! This will be populated via JavaScript using the data-id -->
+
+        <!-- Pop-up modal -->
         <dialog id="instrument-dialog" aria-labelledby="dialog-title" aria-describedby="dialog-desc">
             <form method="dialog">
                 <button class="dialog-close" aria-label="Close">✕</button>
@@ -83,11 +72,13 @@
             </article>
         </dialog>
 
+        <!-- Contact Section -->
         <section id="contact" aria-labelledby="contact-heading">
             <h2 id="contact-heading">Contact</h2>
             <p>Email us at <a href="mailto:team@chordcloud.example">team@chordcloud.example</a></p>
         </section>
 
+        <!-- About Section -->
         <section id="about" aria-labelledby="about-heading">
             <h2 id="about-heading">About</h2>
             <p>ChordCloud is a student project showcasing orchestral and band instruments. We're passionate about helping people discover and learn about the diverse world of musical instruments, from classical strings to modern brass. Our collection features detailed descriptions and images to inspire both beginners and seasoned musicians. Whether you're curious about the violin's elegance or the trumpet's boldness, ChordCloud is your gateway to exploring the sounds that shape our musical world.</p>
@@ -97,8 +88,6 @@
     <footer>
         <small>&copy; 2025 ChordCloud</small>
     </footer>
-
-    <script type="module" src="js/main.js"></script>
-
 </body>
 </html>
+
