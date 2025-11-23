@@ -32,12 +32,35 @@
 
     
     <main id="main">
+        
+        <!-- Search and Filters -->
+        <div class="search-container">
+            <form>
+                <input type="text" id="instrumentsSearch" name="instrumentsSearch" placeholder="Find an Instrument" class="search-input">
+                <button class="search-button" type="submit">🔍</button>
+            </form>
+        </div>
+
+        <div class="instruments-grid-filters">
+            <select>
+                <option value="All Instruments">All Instrument Families</option>
+                <option value="Brass">Brass</option>
+                <option value="Woodwinds">Woodwinds</option>
+                <option vlaue="Percussion">Percussion</option>
+                <option value="Strings">Strings</option>
+                <option value="Other">Other</option>
+            </select>
+            
+            <button class="Favorites">Favorites</button>
+        </div>
+
+        <hr> 
 
         <!-- Instruments grid -->
         <section id="instruments" class="instruments" aria-labelledby="instruments-heading">
             <h1 id="instruments-heading">Instruments</h1>
         
-            <ul id="instruments-list" class="instruments-grid">
+            <ul id="instruments-list">
                 <!-- The instruments (and their corresponding data) will be dynamically loaded in later on with Java Script-->
             </ul>
         </section>
