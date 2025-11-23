@@ -23,27 +23,33 @@
     <main id="main">
         
         <!-- Search and Filters -->
-        <div class="search-container">
-            <form>
-                <input type="text" id="instrumentsSearch" name="instrumentsSearch" placeholder="Find an Instrument" class="search-input">
-                <button class="search-button" type="submit">🔍</button>
-            </form>
+        <div class="instruments-grid-filters-and-search">
+            <div class="search-container">
+                <form class="search-form">
+                    <div class="search-input-wrapper">
+                        <input type="text" id="instrument-search" name="instrument-search" placeholder="Find an Instrument" class="search-input">
+                    </div>
+                    <button class="search-button" type="submit">🔍</button>
+                </form>
+            </div>
+
+            <div class="instruments-grid-filters">
+                <select id="instrument-family-filter">
+                    <option value="All Instruments">All Instruments</option>
+                    <option value="Brass">Brass</option>
+                    <option value="Woodwinds">Woodwinds</option>
+                    <option value="Percussion">Percussion</option>
+                    <option value="Strings">Strings</option>
+                    <option value="Other">Other</option>
+                </select>
+                
+                <button type="button" class="favorite-filter" aria-pressed="false">
+                    Favorites
+                </button>
+            </div>
         </div>
 
-        <div class="instruments-grid-filters">
-            <select>
-                <option value="All Instruments">All Instrument Families</option>
-                <option value="Brass">Brass</option>
-                <option value="Woodwinds">Woodwinds</option>
-                <option vlaue="Percussion">Percussion</option>
-                <option value="Strings">Strings</option>
-                <option value="Other">Other</option>
-            </select>
-            
-            <button class="Favorites">Favorites</button>
-        </div>
-
-        <hr> 
+        
 
         <!-- Instruments grid -->
         <section id="instruments" class="instruments" aria-labelledby="instruments-heading">

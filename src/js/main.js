@@ -29,6 +29,21 @@ document.addEventListener('DOMContentLoaded', async () => {
   if (!searchInput) {
     console.error("Search input not found! Make sure your HTML has <input id='instrument-search'>");
   }
+  const favoriteFilterButton = document.querySelector('.favorite-filter');
+  if (!favoriteFilterButton) {
+    console.warn('Favorite filter button missing from the DOM.');
+  } else {
+    favoriteFilterButton.addEventListener('click', () => {
+      const wasPressed = favoriteFilterButton.getAttribute('aria-pressed') === 'true';
+      const isNowPressed = !wasPressed;
+      favoriteFilterButton.setAttribute('aria-pressed', String(isNowPressed));
+
+      favoriteFilterButton.dispatchEvent(new CustomEvent('favorite-filter-toggle', {
+        bubbles: true,
+        detail: { enabled: isNowPressed }
+      }));
+    });
+  }
 
   try {
     allInstruments = await fetchInstruments();
