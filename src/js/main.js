@@ -28,6 +28,11 @@ let allInstruments = [];
 document.addEventListener('DOMContentLoaded', async () => {
   const searchInput = document.getElementById('instrument-search');
   const favoriteFilterButton = document.querySelector('.favorite-filter');
+  const familyFilterSelect = document.getElementById('instrument-family-filter');
+
+  // Local filter state
+  let currentQuery = '';
+  let currentFamily = 'all'; // one of: all, brass, woodwind, percussion, strings, other
 
   try {
     // Fetch instruments
@@ -41,18 +46,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Search input
     if (searchInput) {
       searchInput.addEventListener('input', async (e) => {
-        const query = e.target.value.toLowerCase();
-
-        let filtered = allInstruments.filter(inst =>
-          inst.title.toLowerCase().includes(query)
-        );
-
-        // Apply favorites filter if active
-        const instrumentsToRender = favoriteFilterButton.getAttribute('aria-pressed') === 'true'
-          ? filtered.filter(inst => inst.favorite)
-          : filtered;
-
-        await ui.renderInstruments(instrumentsToRender);
+        currentQuery = e.target.value.toLowerCase();
+        const filtered = applyFilters(allInstruments, currentQuery, currentFamily);
+        await ui.renderInstruments(maybeApplyFavorites(filtered, favoriteFilterButton));
         initializeModal();
       });
     }
@@ -64,23 +60,22 @@ document.addEventListener('DOMContentLoaded', async () => {
         const isNowPressed = !wasPressed;
         favoriteFilterButton.setAttribute('aria-pressed', String(isNowPressed));
 
-        // Re-render using full instruments array
-        await ui.setFavoritesFilter(isNowPressed, allInstruments);
+        // Update favorites state in UI module and re-render with current filters
+        const filtered = applyFilters(allInstruments, currentQuery, currentFamily);
+        await ui.setFavoritesFilter(isNowPressed, filtered);
+        initializeModal();
+      });
+    }
 
-        // Re-apply search filter if any
-        if (searchInput && searchInput.value.trim() !== '') {
-          const query = searchInput.value.toLowerCase();
-          let filtered = allInstruments.filter(inst =>
-            inst.title.toLowerCase().includes(query)
-          );
+    // Instrument family dropdown
+    if (familyFilterSelect) {
+      familyFilterSelect.addEventListener('change', async () => {
+        const selected = normalizeFamilyValue(familyFilterSelect.value);
+        currentFamily = selected || 'all';
 
-          const instrumentsToRender = isNowPressed
-            ? filtered.filter(inst => inst.favorite)
-            : filtered;
-
-          await ui.renderInstruments(instrumentsToRender);
-          initializeModal();
-        }
+        const filtered = applyFilters(allInstruments, currentQuery, currentFamily);
+        await ui.renderInstruments(maybeApplyFavorites(filtered, favoriteFilterButton));
+        initializeModal();
       });
     }
 
@@ -88,3 +83,38 @@ document.addEventListener('DOMContentLoaded', async () => {
     console.error("Failed to fetch or render instruments:", err);
   }
 });
+
+// Helper: apply search and family filters (favorites handled by UI module)
+function applyFilters(instruments, query, family) {
+  let result = instruments;
+  if (query && query.trim() !== '') {
+    const q = query.toLowerCase();
+    result = result.filter(inst => inst.title.toLowerCase().includes(q));
+  }
+  const fam = (family || 'all').toLowerCase();
+  if (fam !== 'all') {
+    result = result.filter(inst => (inst.family || 'other').toLowerCase() === fam);
+  }
+  return result;
+}
+
+// Helper: map dropdown value to our tag
+function normalizeFamilyValue(value) {
+  const v = (value || '').toLowerCase();
+  if (v.includes('all')) return 'all';
+  const map = {
+    'brass': 'brass',
+    'woodwinds': 'woodwind',
+    'woodwind': 'woodwind',
+    'percussion': 'percussion',
+    'strings': 'strings',
+    'other': 'other',
+  };
+  return map[v] || 'all';
+}
+
+// Helper: apply favorites filter based on button state
+function maybeApplyFavorites(list, favoriteFilterButton) {
+  const isFavOn = favoriteFilterButton && favoriteFilterButton.getAttribute('aria-pressed') === 'true';
+  return isFavOn ? list.filter(inst => inst.favorite) : list;
+}
