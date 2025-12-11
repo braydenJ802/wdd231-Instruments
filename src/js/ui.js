@@ -1,62 +1,85 @@
-let instrumentsData = []; // Module-level variable to store data
+let instrumentsData = [];
+let favoritesOnly = false;
 
+// Render instruments
 export async function renderInstruments(instruments) {
     const instrumentsList = document.getElementById("instruments-list");
-    if (!instrumentsList) {
-        console.error("Could not find instruments-list element");
-        return;
-    }
+    if (!instrumentsList) return;
 
-    const filteredInstruments = instruments.filter(inst => {
-        return inst.ns === 0 && inst.title !== 'Treatise on Instrumentation';
-    });
-    instrumentsData = []; // Reset data array
+    const filtered = instruments.filter(inst => inst.ns === 0 && inst.title !== 'Treatise on Instrumentation');
+    const instrumentsToRender = favoritesOnly
+        ? filtered.filter(inst => inst.favorite)
+        : filtered;
 
-    const instrumentPromises = filteredInstruments.map(async (instrument) => {
+    instrumentsData = [];
+
+    const instrumentPromises = instrumentsToRender.map(async (inst) => {
         try {
-            const title = instrument.title;
-            
-            const summaryUrl = `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(title)}`;
+            if (typeof inst.favorite === 'undefined') inst.favorite = false;
+
+            const summaryUrl = `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(inst.title)}`;
             const summaryResponse = await fetch(summaryUrl);
-            if (!summaryResponse.ok) {
-                throw new Error(`Failed to fetch summary for ${title}`);
-            }
+            if (!summaryResponse.ok) return '';
+
             const summaryData = await summaryResponse.json();
-            
             const imageUrl = summaryData.thumbnail ? summaryData.thumbnail.source : null;
+            if (!imageUrl) return '';
 
-            // Only display the instrument if an image is available.
-            if (!imageUrl) {
-                return '';
-            }
-
-            // Store all relevant data for the modal
             const instrumentDetails = {
-                title: title,
-                imageUrl: imageUrl,
+                title: inst.title,
+                imageUrl,
                 extract: summaryData.extract,
+                favorite: inst.favorite
             };
             const index = instrumentsData.push(instrumentDetails) - 1;
 
-            // Generate HTML for the grid (image and name only)
-            let html = `<li class="instrument-card" data-instrument-index="${index}" role="button" tabindex="0">
-                            <figure>
-                                <img src="${imageUrl}" alt="${title}">
-                                <figcaption>${title}</figcaption>
-                            </figure>
-                        </li>`;
-            return html;
-        } catch (error) {
-            console.error(`Failed to process instrument ${instrument.title}:`, error);
-            return ''; // Return an empty string for this instrument to not break the page
+            const heartClass = inst.favorite ? 'heart favorited' : 'heart';
+
+            return `
+                <li class="instrument-card" data-instrument-index="${index}" role="button" tabindex="0">
+                    <div class="${heartClass}" data-index="${index}">♥</div>
+                    <figure>
+                        <img src="${imageUrl}" alt="${inst.title}">
+                        <figcaption>${inst.title}</figcaption>
+                    </figure>
+                </li>
+            `;
+        } catch (err) {
+            console.error(`Failed to process ${inst.title}:`, err);
+            return '';
         }
     });
 
-    const instrumentHtmls = await Promise.all(instrumentPromises);
-    instrumentsList.innerHTML = instrumentHtmls.join('');
+    const htmls = await Promise.all(instrumentPromises);
+    instrumentsList.innerHTML = htmls.join('');
+
+    // Attach click events to hearts
+    document.querySelectorAll('.instrument-card .heart').forEach(heart => {
+        heart.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const idx = heart.getAttribute('data-index');
+
+            // Toggle favorite in instrumentsData
+            instrumentsData[idx].favorite = !instrumentsData[idx].favorite;
+
+            // Toggle favorite in the original allInstruments array
+            if (window.allInstruments) {
+                const original = window.allInstruments.find(inst => inst.title === instrumentsData[idx].title);
+                if (original) original.favorite = instrumentsData[idx].favorite;
+            }
+
+            heart.classList.toggle('favorited', instrumentsData[idx].favorite);
+        });
+    });
 }
 
-// Helps to get data for the modal
+// Set favorites filter
+export async function setFavoritesFilter(enabled, fullInstruments) {
+    favoritesOnly = enabled;
+    await renderInstruments(fullInstruments);
+}
+
+// Retrieve data for modal
 export function getInstrumentData(index) {
     return instrumentsData[index];
 }

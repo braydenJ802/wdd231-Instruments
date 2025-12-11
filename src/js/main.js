@@ -1,5 +1,5 @@
 import { fetchInstruments } from './api.js';
-import { renderInstruments } from './ui.js';
+import * as ui from './ui.js';
 import { getUser, saveUser } from './storage.js';
 import { initializeModal } from './modal.js';
 
@@ -22,48 +22,65 @@ if (userData && userData.name) {
   });
 }
 
+window.allInstruments = []; // global array to store instruments
 let allInstruments = [];
 
 document.addEventListener('DOMContentLoaded', async () => {
   const searchInput = document.getElementById('instrument-search');
-  if (!searchInput) {
-    console.error("Search input not found! Make sure your HTML has <input id='instrument-search'>");
-  }
   const favoriteFilterButton = document.querySelector('.favorite-filter');
-  if (!favoriteFilterButton) {
-    console.warn('Favorite filter button missing from the DOM.');
-  } else {
-    favoriteFilterButton.addEventListener('click', () => {
-      const wasPressed = favoriteFilterButton.getAttribute('aria-pressed') === 'true';
-      const isNowPressed = !wasPressed;
-      favoriteFilterButton.setAttribute('aria-pressed', String(isNowPressed));
-
-      favoriteFilterButton.dispatchEvent(new CustomEvent('favorite-filter-toggle', {
-        bubbles: true,
-        detail: { enabled: isNowPressed }
-      }));
-    });
-  }
 
   try {
-    allInstruments = await fetchInstruments();
+    // Fetch instruments
+    window.allInstruments = await fetchInstruments();
+    allInstruments = window.allInstruments;
 
     // Initial render
-    await renderInstruments(allInstruments);
+    await ui.renderInstruments(allInstruments);
     initializeModal();
 
+    // Search input
     if (searchInput) {
       searchInput.addEventListener('input', async (e) => {
         const query = e.target.value.toLowerCase();
-        console.log("Search input changed:", query);
 
-        // Filter raw API data by title only
-        const filtered = allInstruments.filter(inst => {
-          return inst.title.toLowerCase().includes(query);
-        });
+        let filtered = allInstruments.filter(inst =>
+          inst.title.toLowerCase().includes(query)
+        );
 
-        await renderInstruments(filtered);
+        // Apply favorites filter if active
+        const instrumentsToRender = favoriteFilterButton.getAttribute('aria-pressed') === 'true'
+          ? filtered.filter(inst => inst.favorite)
+          : filtered;
+
+        await ui.renderInstruments(instrumentsToRender);
         initializeModal();
+      });
+    }
+
+    // Favorites filter button
+    if (favoriteFilterButton) {
+      favoriteFilterButton.addEventListener('click', async () => {
+        const wasPressed = favoriteFilterButton.getAttribute('aria-pressed') === 'true';
+        const isNowPressed = !wasPressed;
+        favoriteFilterButton.setAttribute('aria-pressed', String(isNowPressed));
+
+        // Re-render using full instruments array
+        await ui.setFavoritesFilter(isNowPressed, allInstruments);
+
+        // Re-apply search filter if any
+        if (searchInput && searchInput.value.trim() !== '') {
+          const query = searchInput.value.toLowerCase();
+          let filtered = allInstruments.filter(inst =>
+            inst.title.toLowerCase().includes(query)
+          );
+
+          const instrumentsToRender = isNowPressed
+            ? filtered.filter(inst => inst.favorite)
+            : filtered;
+
+          await ui.renderInstruments(instrumentsToRender);
+          initializeModal();
+        }
       });
     }
 
