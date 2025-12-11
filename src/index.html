@@ -12,11 +12,14 @@
 
     <header class="site-header">
         <nav aria-label="Primary" class="nav-grid">
-            <a href="#/index.html" aria-label="ChordCloud home">ChordCloud</a>
-            <a href="#contact">Contact</a>
-            <img src="images/cclogo.png" alt="ChordCloud logo" class="logo">
-            <a href="#about">About</a>
-            <a id="signup-btn" class="button" href="signup.html">Sign up for our emails!</a>
+            <a href="index.html" aria-label="ChordCloud home" class="logo-link">
+                <img src="images/cclogo.png" alt="ChordCloud logo" class="logo">
+            </a>
+            <div class="nav-right">
+                <a href="#contact">Contact</a>
+                <a href="#about">About</a>
+                <a id="signup-btn" class="button" href="signup.html">Sign up for our emails!</a>
+            </div>
         </nav>
     </header>
 
@@ -27,12 +30,12 @@
         <!-- Search and Filters -->
         <div class="instruments-grid-filters-and-search">
             <div class="search-container">
-                <form class="search-form">
+                <div class="search-input-focus">
                     <div class="search-input-wrapper">
                         <input type="text" id="instrument-search" name="instrument-search" placeholder="Find an Instrument" class="search-input">
                     </div>
                     <button class="search-button" type="submit">🔍</button>
-                </form>
+                </div>
             </div>
 
             <div class="instruments-grid-filters">
@@ -54,11 +57,11 @@
 
         <!-- Instruments grid -->
         <section id="instruments" class="instruments" aria-labelledby="instruments-heading">
-            
-        
-            <ul id="instruments-list">
-                <!-- The instruments (and their corresponding data) will be dynamically loaded in later on with Java Script-->
-            </ul>
+            <div class="instruments-viewport" role="region" aria-label="Instruments grid">
+                <ul id="instruments-list">
+                    <!-- The instruments (and their corresponding data) will be dynamically loaded in later on with Java Script-->
+                </ul>
+            </div>
         </section>
 
         <!-- Pop-up modal -->

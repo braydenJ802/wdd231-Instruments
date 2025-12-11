@@ -27,6 +27,7 @@ let allInstruments = [];
 
 document.addEventListener('DOMContentLoaded', async () => {
   const searchInput = document.getElementById('instrument-search');
+  const searchButton = document.querySelector('.search-button');
   const favoriteFilterButton = document.querySelector('.favorite-filter');
   const familyFilterSelect = document.getElementById('instrument-family-filter');
 
@@ -50,6 +51,13 @@ document.addEventListener('DOMContentLoaded', async () => {
         const filtered = applyFilters(allInstruments, currentQuery, currentFamily);
         await ui.renderInstruments(maybeApplyFavorites(filtered, favoriteFilterButton));
         initializeModal();
+      });
+    }
+
+    // Search button: focus the input (no form submit)
+    if (searchInput && searchButton) {
+      searchButton.addEventListener('click', () => {
+        searchInput.focus();
       });
     }
 
