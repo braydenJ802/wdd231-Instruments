@@ -5,34 +5,39 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Sign Up</title>
   <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/signup.css">
 </head>
 <body>
-  <main>
-    <h1>Sign up for ChordCloud emails</h1>
-    <form id="signup-form">
-      <label>
+  <main class="signup-container">
+    <h1 class="signup-title">Sign up for ChordCloud emails</h1>
+
+    <form id="signup-form" class="signup-form">
+      <label class="signup-label">
         Name:
-        <input type="text" id="name" name="name" required>
+        <input type="text" id="name" name="name" required class="signup-input">
       </label>
-      <label>
+
+      <label class="signup-label">
         Email:
-        <input type="email" id="email" name="email" required>
+        <input type="email" id="email" name="email" required class="signup-input">
       </label>
-      <button type="submit">Sign Up</button>
+
+      <button type="submit" class="signup-button">Sign Up</button>
     </form>
 
-<a href="index.html" id="reset-link">Reset</a>
-
-<script>
-const resetLink = document.getElementById('reset-link')
-
-resetLink.addEventListener('click', (e) => {
-  localStorage.clear() // clears all stored data
-})
-</script>
-
+    <a href="#" id="reset-link" class="reset-button">Reset</a>
   </main>
 
   <script type="module" src="js/signup.js"></script>
+
+  <script>
+    const resetLink = document.getElementById('reset-link')
+    resetLink.addEventListener('click', e => {
+      e.preventDefault()
+      localStorage.clear()
+      window.history.replaceState({}, document.title, 'index.html')
+      window.location.href = 'index.html'
+    })
+  </script>
 </body>
 </html>
