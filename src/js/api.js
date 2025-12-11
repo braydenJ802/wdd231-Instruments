@@ -6,6 +6,35 @@ export async function fetchInstruments() {
     console.log(categoryData);
     const instruments = categoryData.query.categorymembers;
     console.log(instruments);
-    
-    return instruments;
+
+    const taggedInstruments = addInstrumentFamilies(instruments);
+    console.log(taggedInstruments);
+
+    return taggedInstruments;
+}
+
+
+function tagInstrument({ title }) {
+    const name = title.toLowerCase();
+
+    if (["flute", "clarinet", "oboe", "bassoon"].some(k => name.includes(k)))
+        return "woodwind";
+
+    if (["trumpet", "trombone", "tuba", "french horn", "euphonium"].some(k => name.includes(k)))
+        return "brass";
+
+    if (["timpani", "snare drum", "bass drum", "cymbals"].some(k => name.includes(k)))
+        return "percussion";
+
+    if (["violin", "viola", "cello", "double bass", "harp"].some(k => name.includes(k)))
+        return "strings";
+
+    return "other";
+}
+
+function addInstrumentFamilies(instruments) {
+    return instruments.map(instrument => ({
+        ...instrument,
+        family: tagInstrument(instrument),
+    }));
 }
